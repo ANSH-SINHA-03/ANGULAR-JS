@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Expense Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fff; /* White background */
+    }
+
+    header {
+      background-color: #007bff; /* Blue background */
+      color: #fff; /* White text */
+      padding: 10px;
+      display: flex;
+      justify-content: space-between; /* Adjust spacing */
+      align-items: center;
+      position: fixed;
+      top: 0;
+      width: 100%;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      width: 100%;
+    }
+
+    .hamburger-menu {
+      padding: 5px;
+      cursor: pointer;
+      font-weight: bold; /* Make the hamburger menu bold */
+    }
+
+    .sliding-menu {
+      display: none; /* Hide the menu initially */
+      position: fixed;
+      top: 50px;
+      left: 0;
+      width: 200px;
+      background-color: #007bff; /* Blue background */
+      color: #fff; /* White text */
+      padding: 10px;
+    }
+
+    .menu-item {
+      padding: 10px 0; /* Adjust padding */
+      display: block;
+      text-decoration: none; /* Remove underline */
+      color: #fff; /* White text */
+    }
+
+    .menu-item:hover {
+      background-color: #0056b3; /* Darker blue on hover */
+    }
+
+    .logout-button {
+      padding: 10px 0px 10px 0px; /* Adjust padding */
+      display: block;
+      text-decoration: none; /* Remove underline */
+      color: #fff; /* White text */
+      margin-right: 20px; /* Add right margin */
+    }
+
+    .logout-button:hover {
+      background-color: #0056b3; /* Darker blue on hover */
+    }
+
+    .view-expenses-button {
+      padding: 10px 0; /* Adjust padding */
+      display: block;
+      text-decoration: none; /* Remove underline */
+      color: #fff; /* White text */
+    }
+
+    .view-expenses-button:hover {
+      background-color: #0056b3; /* Darker blue on hover */
+    }
+
+    .body-content {
+      text-align: center;
+      margin-top: 150px;
+    }
+
+    .card-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 50px;
+    }
+
+    .card {
+      background-color: #fff; /* White background */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow */
+      border-radius: 8px; /* Add rounded corners */
+      padding: 20px;
+      margin: 0 10px;
+      width: 300px;
+    }
+
+    .card-heading {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .expense-entry {
+      text-align: left;
+      margin-top: 20px;
+    }
+
+    .expense-entry label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .expense-entry input,
+    .expense-entry select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+
+    .expense-entry button {
+      padding: 10px 20px;
+      background-color: #007bff; /* Blue background */
+      color: #fff; /* White text */
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .reset-button {
+      background-color: #ef0909; /* Red background */
+      color: #fff; /* white text */
+      margin-right: 10px;
+    }
+
+    .save-button{
+        background-color: green; /* green background */
+        color: #fff;/* White text */
+    }
+
+    footer {
+      background-color: #007bff; /* Blue background */
+      color: #fff; /* White text */
+      padding: 10px;
+      text-align: center;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header section -->
+  <header>
+    <div class="hamburger-menu" onclick="toggleMenu()">☰</div>
+    <div class="logo">Expense Tracker</div>
+    <a href="Expense.html" class="view-expenses-button">View Expenses</a>
+    <a href="Base.html" class="logout-button">Logout</a>
+  </header>
+
+  <!-- Sliding menu section -->
+  <div class="sliding-menu" id="menu">
+    <a href="Home.html" class="menu-item">Home</a>
+    <a href="Expense.html" class="menu-item">View Expenses</a>
+    <a href="Base.html" class="menu-item">Logout</a>
+  </div>
+
+  <!-- Body content section -->
+  <div class="body-content">
+    <div class="card-container">
+      <!-- Expense entry card -->
+      <div class="card">
+        <div class="card-heading">Enter Expense</div>
+        <div class="expense-entry">
+          <p style="color: #888;">Enter the required fields:</p>
+          <label for="expense-name">Expense Name:</label>
+          <input type="text" id="expense-name" placeholder="Enter expense name" required><br>
+          <label for="expense-amount">Expense Amount:</label>
+          <input type="number" id="expense-amount" placeholder="Enter expense amount" required step="0.01"><br>
+          <label for="expense-date">Expense Date:</label>
+          <input type="date" id="expense-date" required><br>
+          <label for="payment-type">Payment Type:</label>
+          <select id="payment-type">
+            <option value="cash">Cash</option>
+            <option value="credit-card">Credit Card</option>
+            <option value="debit-card">Debit Card</option>
+          </select>
+        </div>
+        <button class="reset-button" onclick="resetFields()">Reset</button>
+        <button class="save-button" onclick="saveExpense()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer section -->
+  <footer>
+    &copy; 2024 Expense Tracker
+  </footer>
+
+  <script>
+    function saveExpense() {
+      var expenseName = document.getElementById("expense-name").value.trim();
+      var expenseAmount = document.getElementById("expense-amount").value.trim();
+      var expenseDate = document.getElementById("expense-date").value.trim();
+      var paymentType = document.getElementById("payment-type").value;
+
+      // Check if any of the fields are empty
+      if (expenseName === "" || expenseAmount === "" || expenseDate === "") {
+        alert("Please fill in all the fields.");
+        return;
+      }
+
+      // Check if expense name contains at least 2 characters
+      if (expenseName.length < 2) {
+        alert("Expense name must contain at least 2 characters.");
+        return;
+      }
+
+      // Check if expense amount contains at least one digit
+      if (!/\d/.test(expenseAmount)) {
+        alert("Expense amount must contain at least one digit.");
+        return;
+      }
+
+      // Check if a valid date is chosen
+      if (isNaN(new Date(expenseDate))) {
+        alert("Please choose a valid expense date.");
+        return;
+      }
+
+      var expenseDetails = {
+        name: expenseName,
+        amount: parseFloat(expenseAmount),
+        date: expenseDate,
+        paymentType: paymentType
+      };
+
+      var allExpenseDates = JSON.parse(localStorage.getItem("allExpenseDates")) || [];
+      allExpenseDates.push(expenseDate);
+      localStorage.setItem("allExpenseDates", JSON.stringify(allExpenseDates));
+
+      if (allExpenseDates.length === 1) {
+        localStorage.setItem("firstExpenseDate", expenseDate);
+      }
+
+      var expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+      expenses.push(expenseDetails);
+      localStorage.setItem("expenses", JSON.stringify(expenses));
+
+      // Reset input fields after saving
+      resetFields();
+
+      // Update expenses logged count
+      updateExpensesCount();
+    }
+
+    function resetFields() {
+      document.getElementById("expense-name").value = "";
+      document.getElementById("expense-amount").value = "";
+      document.getElementById("expense-date").value = "";
+      document.getElementById("payment-type").selectedIndex = 0;
+    }
+
+    function updateExpensesCount() {
+      var expensesCount = JSON.parse(localStorage.getItem("expenses")) || [];
+      document.getElementById("expenses-count").textContent = expensesCount.length;
+    }   
+</script>
+
+</body>
+</html>

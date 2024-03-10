@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Expense Tracker - Expenses</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fff; /* White background */
+    }
+
+    header {
+      background-color: #007bff; /* Blue background */
+      color: #fff; /* White text */
+      padding: 10px;
+      display: flex;
+      justify-content: space-between; /* Adjust spacing */
+      align-items: center;
+      position: fixed;
+      top: 0;
+      width: 100%;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      width: 100%;
+    }
+
+    .reset-button {
+      background-color: #dc3545;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+      margin-right: 20px;
+    }
+
+    .reset-button:hover {
+      background-color: #bd2130;
+    }
+
+    .body-content {
+      text-align: left; /* Align content to the left */
+      margin-top: 150px;
+    }
+
+    .card-container {
+      display: flex;
+      justify-content: space-between; /* Align cards to the left */
+      margin-top: 50px;
+      margin-left: 20px; /* Adjust margin to create space from the left */
+    }
+
+    .card {
+      background-color: #fff; /* White background */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow */
+      border-radius: 8px; /* Add rounded corners */
+      padding: 20px;
+      margin: 0 10px;
+      width: 45%; /* Adjust card width */
+    }
+
+    .card-heading {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .card-content {
+      text-align: left;
+    }
+
+    .card-content table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .card-content th, .card-content td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    .card-content th {
+      background-color: #f2f2f2;
+    }
+
+    footer {
+      background-color: #007bff; /* Blue background */
+      color: #fff; /* White text */
+      padding: 10px;
+      text-align: center;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    /* Hamburger menu styles */
+    .hamburger-menu {
+      padding: 5px;
+      cursor: pointer;
+    }
+
+    .sliding-menu {
+      display: none; /* Hide the menu initially */
+      position: fixed;
+      top: 50px;
+      left: 0;
+      width: 200px;
+      background-color: #007bff; /* Blue background */
+      color: #fff; /* White text */
+      padding: 10px;
+    }
+
+    .menu-item {
+      padding: 10px 0; /* Adjust padding */
+      display: block;
+      text-decoration: none; /* Remove underline */
+      color: #fff; /* White text */
+    }
+
+    .menu-item:hover {
+      background-color: #0056b3; /* Darker blue on hover */
+    }
+
+    /* Expense graph styles */
+    #expense-graph-container {
+      margin-top: 20px; /* Add margin between table and graph */
+    }
+
+    /* Hide initially */
+    #create-expense-card {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header section -->
+  <header>
+    <div class="hamburger-menu" onclick="toggleMenu()">☰</div>
+    <div class="logo">Expense Tracker - Expenses</div>
+    <button class="reset-button" onclick="resetExpenseTable()">Reset</button>
+  </header>
+
+  <!-- Sliding menu section -->
+  <div class="sliding-menu" id="menu">
+    <a href="Home.html" class="menu-item">Home</a>
+  </div>
+
+  <!-- Body content section -->
+  <div class="body-content">
+    <div class="card-container">
+      <!-- Expense Table card -->
+      <div class="card" id="expense-table-card">
+        <div class="card-heading">Expense Table</div>
+        <div class="card-content">
+          <table>
+            <thead>
+              <tr>
+                <th>Expense Name</th>
+                <th>Expense Amount</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="expense-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- No Expenses Yet card -->
+      <div class="card" id="no-expenses-card">
+        <div class="card-heading">No Expenses Yet</div>
+        <div class="card-content">
+          <p>Click below to add Expenses</p>
+          <button onclick="redirectToHome()">Create Expenses</button>
+        </div>
+      </div>
+
+      <!-- Expense Graph card -->
+      <div class="card" id="expense-graph-card">
+        <div class="card-heading">Expense Graph</div>
+        <div class="card-content" id="expense-graph-container">
+          <canvas id="expense-graph" width="400" height="200"></canvas>
+        </div>
+      </div>
+
+      <!-- Create Expense card -->
+      <div class="card" id="create-expense-card">
+        <div class="card-heading">Create Expense</div>
+        <div class="card-content">
+          <p>Create your first expense by clicking the button below.</p>
+          <button onclick="redirectToHome()">Create Expense</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer section -->
+  <footer>
+    &copy; 2024 Expense Tracker
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    function resetExpenseTable() {
+      // Reset local storage data for expense details
+      localStorage.removeItem("expenses");
+      // Reset the table display to default
+      document.getElementById("expense-table-body").innerHTML = "";
+      // Display the initial "No Expenses Yet" card
+      document.getElementById("no-expenses-card").style.display = "block";
+      // Hide the expense details card
+      document.getElementById("expense-table-card").style.display = "none";
+      document.getElementById("expense-graph-card").style.display = "none";
+    }
+
+    function redirectToHome() {
+      window.location.href = "Home.html";
+    }
+
+    function toggleMenu() {
+      var menu = document.getElementById("menu");
+      if (menu.style.display === "block") {
+        menu.style.display = "none";
+      } else {
+        menu.style.display = "block";
+      }
+    }
+
+    // Check if there are saved expenses
+    var expenses = JSON.parse(localStorage.getItem("expenses"));
+    if (expenses && expenses.length > 0) {
+      // Populate the expense table
+      var tableBody = document.getElementById("expense-table-body");
+      expenses.forEach(function(expense) {
+        var row = "<tr><td>" + expense.name + "</td><td>" + expense.amount + "</td><td>" + expense.date + "</td></tr>";
+        tableBody.innerHTML += row;
+      });
+
+      // Populate the expense graph
+      var expenseNames = expenses.map(function(expense) {
+        return expense.name;
+      });
+      var expenseAmounts = expenses.map(function(expense) {
+        return expense.amount;
+      });
+
+      var ctx = document.getElementById('expense-graph').getContext('2d');
+      var expenseGraph = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: expenseNames,
+          datasets: [{
+            label: 'Expense Amount',
+            data: expenseAmounts,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          }
+        }
+      });
+
+      // Display the expense details card
+      document.getElementById("no-expenses-card").style.display = "none";
+      document.getElementById("expense-table-card").style.display = "block";
+      document.getElementById("expense-graph-card").style.display = "block";
+    } else {
+      // Check if the user is a new user
+      var isNewUser = localStorage.getItem("isNewUser");
+
+      if (isNewUser === "true") {
+        // Display the Create Expense card for new users
+        document.getElementById("create-expense-card").style.display = "block";
+        // Reset the isNewUser flag
+        localStorage.setItem("isNewUser", "false");
+      } else {
+        // Display the "No Expenses Yet" card if there are no expenses
+        document.getElementById("no-expenses-card").style.display = "block";
+        document.getElementById("expense-table-card").style.display = "none";
+        document.getElementById("expense-graph-card").style.display = "none";
+      }
+    }
+  </script>
+</body>
+</html>

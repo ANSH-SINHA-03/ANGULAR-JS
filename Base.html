@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login - Expense Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fff; /* White background */
+    }
+
+    header {
+      background-color: #007bff; /* Blue background */
+      color: #fff; /* White text */
+      padding: 10px;
+      display: flex;
+      justify-content: space-between; /* Adjust spacing */
+      align-items: center;
+    }
+
+    .hamburger-menu {
+      padding: 5px;
+      cursor: pointer;
+      font-weight: bold; /* Make the hamburger menu bold */
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .signup-button {
+      padding: 5px 10px;
+      background-color: #fff; /* White background */
+      color: #007bff; /* Blue text */
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: none; /* Remove underline */
+    }
+
+    .signup-button:hover {
+      background-color: #ddd; /* Light gray background on hover */
+    }
+
+    .body-content {
+      text-align: center;
+      margin-top: 50px; /* Adjust margin from top */
+    }
+
+    .login-box {
+      background-color: #f2f2f2; /* Light gray background */
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add shadow */
+      display: inline-block;
+      width: 300px;
+    }
+
+    .login-box h2 {
+      font-size: 22px;
+      font-weight: bold;
+      color: #000; /* Black text */
+      margin-bottom: 20px;
+    }
+
+    .login-box input[type="email"],
+    .login-box input[type="password"] {
+      width: 250px;
+      font-size: 18px;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+
+    .login-button {
+      padding: 10px 20px;
+      background-color: #007bff; /* Blue background */
+      color: #fff; /* White text */
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .get-started-button {
+      padding: 10px 20px;
+      background-color: #007bff; /* Blue background */
+      color: #fff; /* White text */
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+      margin-left: 10px; /* Adjust margin to create space between buttons */
+      text-decoration: none; /* Remove underline */
+    }
+
+    footer {
+      background-color: #007bff; /* Blue background */
+      color: #fff; /* White text */
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Sliding menu styles */
+    .sliding-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200px;
+      height: 100%;
+      background-color: #007bff; /* Blue background */
+      color: #fff; /* White text */
+      padding-top: 50px; /* Adjust padding to avoid overlapping header */
+      transition: transform 0.3s ease;
+      transform: translateX(-200px); /* Hide the menu initially */
+    }
+
+    .show-menu {
+      transform: translateX(0); /* Show the menu */
+    }
+
+    .menu-item {
+      padding: 10px 20px;
+      display: block;
+      text-decoration: none; /* Remove underline */
+      color: #fff; /* White text */
+    }
+
+    .menu-item:hover {
+      background-color: #0056b3; /* Darker blue on hover */
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hamburger-menu" onclick="toggleMenu()">☰</div>
+    <div class="logo">Expense Tracker</div>
+    <a href="signup.html" class="signup-button">Signup</a>
+  </header>
+
+  <!-- Sliding menu -->
+  <div id="menu" class="sliding-menu">
+    <a href="#" class="menu-item" onclick="toggleMenu()">Close</a>
+    <a href="signup.html" class="menu-item">Signup</a>
+  </div>
+
+  <div class="body-content">
+    <h2>Expense Tracker</h2>
+    <p>Track your expenses easily with Expense Tracker!</p>
+    <div class="login-box">
+      <h2>Login</h2>
+      <form id="loginForm" onsubmit="return login()">
+        <input type="email" id="loginEmail" placeholder="Email" required><br>
+        <input type="password" id="loginPassword" placeholder="Password" required><br>
+        <button type="submit" class="login-button">Login</button>
+        <a href="signup.html" class="get-started-button">Get Started</a>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2024 Expense Tracker
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      var menu = document.getElementById("menu");
+      menu.classList.toggle("show-menu");
+    }
+  
+    function login() {
+      var email = document.getElementById("loginEmail").value;
+      var password = document.getElementById("loginPassword").value;
+  
+      // Check if email exists in local storage
+      var userDetails = JSON.parse(localStorage.getItem("userDetails"));
+      if (!userDetails || userDetails.email !== email) {
+        alert("Email not found. Please signup or use a different email.");
+        return false; // Prevent form submission
+      }
+  
+      // Set last logged-in date
+      var currentDate = new Date().toLocaleDateString();
+      localStorage.setItem("lastLoggedInDate", currentDate);
+  
+      // Store login date for the specific email
+      var loginDates = JSON.parse(localStorage.getItem("loginDates")) || {};
+      loginDates[email] = currentDate;
+      localStorage.setItem("loginDates", JSON.stringify(loginDates));
+  
+      // Redirect to Home.html
+      window.location.href = "Home.html";
+  
+      return false; // Prevent form submission
+    }
+  </script>
+  
+</body>
+</html>
