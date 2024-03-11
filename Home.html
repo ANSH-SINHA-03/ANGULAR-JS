@@ -146,6 +146,34 @@
         color: #fff;/* White text */
     }
 
+    .income-entry {
+      text-align: left;
+      margin-top: 20px;
+    }
+
+    .income-entry label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .income-entry input,
+    .income-entry select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+
+    .income-entry button {
+      padding: 10px 20px;
+      background-color: #007bff; /* Blue background */
+      color: #fff; /* White text */
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
     footer {
       background-color: #007bff; /* Blue background */
       color: #fff; /* White text */
@@ -196,6 +224,22 @@
         </div>
         <button class="reset-button" onclick="resetFields()">Reset</button>
         <button class="save-button" onclick="saveExpense()">Save</button>
+      </div>
+
+      <!-- Income entry card -->
+      <div class="card">
+        <div class="card-heading">Enter Income</div>
+        <div class="income-entry">
+          <p style="color: #888;">Enter the required fields:</p>
+          <label for="income-source">Income Source:</label>
+          <input type="text" id="income-name" placeholder="Enter income source" required><br>
+          <label for="income-amount">Income Amount:</label>
+          <input type="number" id="income-amount" placeholder="Enter income amount" required step="0.01"><br>
+          <label for="income-date">Income Date:</label>
+          <input type="date" id="income-date" required><br>
+        </div>
+        <button class="reset-button" onclick="resetIncomeFields()">Reset</button>
+        <button class="save-button" onclick="saveIncome()">Enter</button>
       </div>
     </div>
   </div>
@@ -272,8 +316,97 @@
     function updateExpensesCount() {
       var expensesCount = JSON.parse(localStorage.getItem("expenses")) || [];
       document.getElementById("expenses-count").textContent = expensesCount.length;
-    }   
-</script>
+    }
+    // function to save IncomeDetails
+    function saveIncome() {
+      var incomeName = document.getElementById("income-name").value.trim();
+      var incomeAmount = document.getElementById("income-amount").value.trim();
+      var incomeDate = document.getElementById("income-date").value.trim();
+      
+      // Check if any of the fields are empty
+      if (incomeName === "" || incomeAmount === "" || incomeDate === "") {
+        alert("Please fill in all the fields.");
+        return;
+      }
 
+      // Check if income name contains at least 2 characters
+      if (incomeName.length < 2) {
+        alert("Income Source must contain at least 2 characters.");
+        return;
+      }
+
+      // Check if income amount contains at least one digit
+      if (!/\d/.test(incomeAmount)) {
+        alert("Income amount must contain at least one digit.");
+        return;
+      }
+
+      // Check if a valid date is chosen
+      if (isNaN(new Date(incomeDate))) {
+        alert("Please choose a valid income date.");
+        return;
+      }
+
+      var incomeDetails = {
+        source: incomeName,
+        amount: parseFloat(incomeAmount),
+        date: incomeDate,
+        
+      };
+
+      var allIncomeDates = JSON.parse(localStorage.getItem("allIncomeDates")) || [];
+      allIncomeDates.push(incomeDate);
+      localStorage.setItem("allIncomeDates", JSON.stringify(allIncomeDates));
+
+      if (allIncomeDates.length === 1) {
+        localStorage.setItem("firstIncomeDate", incomeDate);
+      }
+
+      var incomes = JSON.parse(localStorage.getItem("incomes")) || [];
+      incomes.push(incomeDetails);
+      localStorage.setItem("incomes", JSON.stringify(incomes));
+
+      // Reset input fields after saving
+      resetIncomeFields();
+
+      // Update incomes logged count
+      updateIncomesCount();
+
+      // Display income table and graph
+      displayIncomeTable();
+      displayIncomeGraph();
+    }
+
+    function resetIncomeFields() {
+      // Your existing resetIncomeFields function
+    }
+
+    function updateIncomesCount() {
+      // Your existing updateIncomesCount function
+    }
+
+    // Function to display income table
+    function displayIncomeTable() {
+      var incomes = JSON.parse(localStorage.getItem("incomes")) || [];
+      var tableBody = document.getElementById("income-table-body");
+      tableBody.innerHTML = ""; // Clear existing table content
+      if (incomes.length > 0) {
+        incomes.forEach(function(income) {
+          var row = "<tr><td>" + income.source + "</td><td>" + income.amount + "</td><td>" + income.date + "</td></tr>";
+          tableBody.innerHTML += row;
+        });
+        document.getElementById("no-incomes-card").style.display = "none"; // Hide "No Incomes Yet" card
+        document.getElementById("income-table-card").style.display = "block"; // Show income table card
+      }
+    }
+
+    // Function to display income graph
+    function displayIncomeGraph() {
+      // Your code to display income graph
+    }
+
+    // Call displayIncomeTable function when the page loads
+    displayIncomeTable();
+  </script>
 </body>
 </html>
