@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Expense Tracker - Expenses</title>
+  <title>Expense Tracker</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -137,6 +137,16 @@
     #create-expense-card {
       display: none;
     }
+
+    /* Income graph styles */
+    #income-graph-container {
+      margin-top: 20px; /* Add margin between table and graph */
+    }
+
+    /* Hide initially */
+    #create-income-card {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -153,57 +163,104 @@
   </div>
 
   <!-- Body content section -->
-  <div class="body-content">
-    <div class="card-container">
-      <!-- Expense Table card -->
-      <div class="card" id="expense-table-card">
-        <div class="card-heading">Expense Table</div>
-        <div class="card-content">
-          <table>
-            <thead>
-              <tr>
-                <th>Expense Name</th>
-                <th>Expense Amount</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody id="expense-table-body"></tbody>
-          </table>
-        </div>
+<div class="body-content">
+  <div class="card-container">
+    <!-- Expense Table card -->
+    <div class="card" id="expense-table-card">
+      <div class="card-heading">Expense Table</div>
+      <div class="card-content">
+        <table>
+          <thead>
+            <tr>
+              <th>Expense Name</th>
+              <th>Expense Amount</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="expense-table-body"></tbody>
+        </table>
       </div>
+    </div>
 
-      <!-- No Expenses Yet card -->
-      <div class="card" id="no-expenses-card">
-        <div class="card-heading">No Expenses Yet</div>
-        <div class="card-content">
-          <p>Click below to add Expenses</p>
-          <button onclick="redirectToHome()">Create Expenses</button>
-        </div>
+    <!-- No Expenses Yet card -->
+    <div class="card" id="no-expenses-card">
+      <div class="card-heading">No Expenses Yet</div>
+      <div class="card-content">
+        <p>Click below to add Expenses</p>
+        <button onclick="redirectToHome()">Create Expenses</button>
       </div>
+    </div>
 
-      <!-- Expense Graph card -->
-      <div class="card" id="expense-graph-card">
-        <div class="card-heading">Expense Graph</div>
-        <div class="card-content" id="expense-graph-container">
-          <canvas id="expense-graph" width="400" height="200"></canvas>
-        </div>
+    <!-- Expense Graph card -->
+    <div class="card" id="expense-graph-card">
+      <div class="card-heading">Expense Graph</div>
+      <div class="card-content" id="expense-graph-container">
+        <canvas id="expense-graph" width="400" height="200"></canvas>
       </div>
+    </div>
 
-      <!-- Create Expense card -->
-      <div class="card" id="create-expense-card">
-        <div class="card-heading">Create Expense</div>
-        <div class="card-content">
-          <p>Create your first expense by clicking the button below.</p>
-          <button onclick="redirectToHome()">Create Expense</button>
-        </div>
+    <!-- Create Expense card -->
+    <div class="card" id="create-expense-card">
+      <div class="card-heading">Create Expense</div>
+      <div class="card-content">
+        <p>Create your first expense by clicking the button below.</p>
+        <button onclick="redirectToHome()">Create Expense</button>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Footer section -->
+<div class="body-content">
+  <div class="card-container">
+    <!-- Income Table card -->
+    <div class="card" id="income-table-card">
+      <div class="card-heading">Income Table</div>
+      <div class="card-content">
+        <table>
+          <thead>
+            <tr>
+              <th>Income Source</th>
+              <th>Income Amount</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="income-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- No Incomes Yet card -->
+    <div class="card" id="no-incomes-card">
+      <div class="card-heading">No Incomes Yet</div>
+      <div class="card-content">
+        <p>Click below to add Incomes</p>
+        <button onclick="redirectToHome()">Create Incomes</button>
+      </div>
+    </div>
+
+    <!-- Income Graph card -->
+    <div class="card" id="income-graph-card">
+      <div class="card-heading">Income Graph</div>
+      <div class="card-content" id="income-graph-container">
+        <canvas id="income-graph" width="400" height="200"></canvas>
+      </div>
+    </div>
+
+    <!-- Create Income card -->
+    <div class="card" id="create-income-card">
+      <div class="card-heading">Create Income</div>
+      <div class="card-content">
+        <p>Create your first income by clicking the button below.</p>
+        <button onclick="redirectToHome()">Create Income</button>
+      </div>
+    </div>
+  </div>
+</div>     
+
+  <!-- Footer section
   <footer>
     &copy; 2024 Expense Tracker
-  </footer>
+  </footer> -->
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
@@ -217,6 +274,15 @@
       // Hide the expense details card
       document.getElementById("expense-table-card").style.display = "none";
       document.getElementById("expense-graph-card").style.display = "none";
+      // Reset local storage data for income details
+      localStorage.removeItem("incomes");
+      // Reset the table display to default
+      document.getElementById("income-table-body").innerHTML = "";
+      // Display the initial "No incomes Yet" card
+      document.getElementById("no-incomes-card").style.display = "block";
+      // Hide the income details card
+      document.getElementById("income-table-card").style.display = "none";
+      document.getElementById("income-graph-card").style.display = "none";
     }
 
     function redirectToHome() {
@@ -294,6 +360,67 @@
         document.getElementById("expense-graph-card").style.display = "none";
       }
     }
+
+    // script for Income details
+
+    //INCOME SCRIPT HERE
+  // Check if there are saved incomes
+  // Check if there are saved incomes
+var incomes = JSON.parse(localStorage.getItem("incomes"));
+if (incomes && incomes.length > 0) {
+  var tableBody = document.getElementById("income-table-body");
+  incomes.forEach(function(income) {
+    var row = "<tr><td>" + income.source + "</td><td>" + income.amount + "</td><td>" + income.date + "</td></tr>";
+    tableBody.innerHTML += row;
+  });
+
+  var incomeSources = incomes.map(function(income) {
+    return income.source;
+  });
+  var incomeAmounts = incomes.map(function(income) {
+    return income.amount;
+  });
+
+  var ctx = document.getElementById('income-graph').getContext('2d');
+  var incomeGraph = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: incomeSources,
+      datasets: [{
+        label: 'Income Amount',
+        data: incomeAmounts,
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+
+  document.getElementById("no-incomes-card").style.display = "none";
+  document.getElementById("income-table-card").style.display = "block";
+  document.getElementById("income-graph-card").style.display = "block";
+} else {
+  var isNewUser = localStorage.getItem("isNewUser");
+
+  if (isNewUser === "true") {
+    document.getElementById("create-income-card").style.display = "block";
+    localStorage.setItem("isNewUser", "false");
+  } else {
+    document.getElementById("no-incomes-card").style.display = "block";
+    document.getElementById("income-table-card").style.display = "none";
+    document.getElementById("income-graph-card").style.display = "none";
+  }
+}
+
   </script>
 </body>
 </html>
